@@ -1,0 +1,64 @@
+﻿@model Incident
+
+@{
+    ViewBag.Title = ViewBag.Action + " Incident";
+}
+
+<h1>@ViewBag.Title</h1>
+
+<form asp-action="Save" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="IncidentID">Customer</label>
+        <select asp-for="IncidentID" class="form-control">
+            <option value="0">Select Customer...</option>
+            @foreach (Customer c in ViewBag.Customers)
+            {
+                <option value="@c.CustomerID">@c.FullName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="IncidentID">Product</label>
+        <select asp-for="IncidentID" class="form-control">
+
+            @foreach (Product p in ViewBag.Products)
+            {
+                <option value="@p.ProductID">@p.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="IncidentID">Technician</label>
+        <select asp-for="IncidentID" class="form-control">
+            <option value="0">Add Technician...</option>
+            @foreach (Technician t in ViewBag.Technicians)
+            {
+                <option value="@t.TechnicianID">@t.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateOpened">Date Opened</label>
+        <input asp-for="DateOpened" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DateClosed">Date Closed</label>
+        <input asp-for="DateClosed" class="form-control" />
+    </div>
+
+    <input type="hidden" asp-for="IncidentID" />
+
+    <button type="Submit" class="btn btn-primary">Save</button>
+    <a asp-action="List" class="btn btn-primary">Cancel</a>
+
+</form>
