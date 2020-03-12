@@ -9,17 +9,18 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class ProductController: Controller
     {
-        private readonly IProductRepository _productRepository;
-        public ProductController(IProductRepository productRepository)
+        private SportsProContext context;
+        public ProductController(SportsProContext ctx)
         {
-            _productRepository = productRepository;//DI
+            context = ctx;
         }
+
         [Route("Products")]
         public IActionResult List()
         {
             ViewBag.Title = "Product List";
-
-            var productList = _productRepository.GetProducts.ToList();
+            List<Product> productList = context.Products.ToList();
+            
             return View(productList);
         }
 
@@ -36,22 +37,56 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.Action = "Edit";
-            var product = _productRepository.GetProductById(id);
+            var product = context.Products.Find(id);
             return View("AddEdit", product);
         }
 
         [HttpGet]// delete from  db?
         public IActionResult Delete(int id)
         {
-            var product = _productRepository.GetProductById(id);
+            var product = context.Products.Find(id);
+
             return View(product);
         }
 
         [HttpPost]
         public IActionResult Delete(Product product)
         {
+            context.Products.Remove(product);
+            context.SaveChanges();
             return RedirectToAction("List");
         }
+        [HttpPost]
+        public IActionResult Save(Product product)
+        {
+            if (product.ProductID == 0)
+            {
+                ViewBag.Action = "Add";
+            }
+            else
+            {
+                ViewBag.Action = "Edit";
+            }
+            if (ModelState.IsValid)
+            {
+                if (ViewBag.Action == "Add")
+                {
+                    context.Products.Add(product);
+                }
+                else
+                {
+                    context.Products.Update(product);
+                }
+                context.SaveChanges();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return View("AddEdit", product);
+            }
+
+        }
+
     }
 
    

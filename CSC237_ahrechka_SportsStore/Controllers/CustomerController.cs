@@ -9,47 +9,82 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class CustomerController : Controller
     {
-        private readonly ICustomerRepository _customerRepository;
-        private readonly ICountryRepository _countryRepository;
-
-        public CustomerController(ICustomerRepository customerRepository, ICountryRepository countryRepository)
+        private SportsProContext context { get; set; }
+        public CustomerController(SportsProContext ctx)
         {
-            _customerRepository = customerRepository;
-            _countryRepository = countryRepository;
+            context = ctx; 
         }
+
+
         [Route("Customers")]
         public IActionResult List()
         {
-            ViewBag.Title = "Customer List";
-            var customerList = _customerRepository.GetCustomers.ToList();
-            return View(customerList);
+            
+            List<Customer> customers = context.Customers
+                .OrderBy(c => c.LastName).ToList();
+            //var customerList = _customerRepository.GetCustomers.ToList();
+            return View(customers);
         }
         [HttpGet]// display view without info
         public IActionResult Add()
         {
             ViewBag.Action = "Add";
-            ViewBag.Countries = _countryRepository.Countries.OrderBy(c => c.Name).ToList();
+            ViewBag.Countries = context.Countries.ToList();
             return View("AddEdit", new Customer());
         }
         [HttpGet]// Here we add info into view
         public IActionResult Edit(int id)
         {
             ViewBag.Action = "Edit";
-            ViewBag.Countries = _countryRepository.Countries.OrderBy(c => c.Name).ToList();
-            var customer = _customerRepository.GetCustomerById(id);
+            ViewBag.Countries = context.Countries.ToList();
+            var customer = context.Customers.Find(id);
             return View("AddEdit", customer);
         }
         [HttpGet]// delete from  db?
         public IActionResult Delete(int id)
         {
-            var customer = _customerRepository.GetCustomerById(id);
+            var customer = context.Customers.Find(id);
             return View(customer);
         }
-
+        // actual removing from db
         [HttpPost]
         public IActionResult Delete(Customer customer)
         {
+            context.Customers.Remove(customer);
+            context.SaveChanges();
             return RedirectToAction("List");
+        }
+        // save for add and edit
+        [HttpPost]
+        public IActionResult Save(Customer customer)
+        {
+            if (customer.CustomerID == 0)
+            {
+                ViewBag.Action = "Add";
+            }
+            else
+            {
+                ViewBag.Action = "Edit";
+            }
+            if (ModelState.IsValid)
+            {
+                if (ViewBag.Action == "Add")
+                {
+                    context.Customers.Add(customer);
+                }
+                else
+                {
+                    context.Customers.Update(customer);
+                }
+                context.SaveChanges();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                ViewBag.Countries = context.Countries.ToList();
+                return View("AddEdit", customer);
+            }
+
         }
     }
 }

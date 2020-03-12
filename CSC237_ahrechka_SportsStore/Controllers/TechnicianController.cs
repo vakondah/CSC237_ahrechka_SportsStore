@@ -9,19 +9,19 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class TechnicianController: Controller
     {
-        private readonly ITechnicianRepository _technicianRepository;
+        private SportsProContext context;
 
-        public TechnicianController(ITechnicianRepository technicianRepository)
+        public TechnicianController(SportsProContext ctx)
         {
-            _technicianRepository = technicianRepository;
+            context = ctx;
         }
 
         [Route("Technicians")]
         public IActionResult List()
         {
             ViewBag.Title = "Technician List";
-            var technicianList = _technicianRepository.GetTechnicians.ToList();
-            return View(technicianList);
+            List<Technician> techs = context.Technicians.ToList();
+            return View(techs);
         }
         [HttpGet]// display view without info
         public IActionResult Add()
@@ -33,20 +33,52 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.Action = "Edit";
-            var technician = _technicianRepository.GetTechnicianById(id);
-            return View("AddEdit", technician);
+            var tech = context.Technicians.Find(id);
+            return View("AddEdit", tech);
         }
         [HttpGet]// delete action
         public IActionResult Delete(int id)
         {
-            var technician = _technicianRepository.GetTechnicianById(id);
-            return View(technician);
+            var tech = context.Technicians.Find(id);
+            return View(tech);
         }
 
-        [HttpPost]//?
-        public IActionResult Delete(Technician technician)
+        [HttpPost]
+        public IActionResult Delete(Technician tech)
         {
+            context.Technicians.Remove(tech);
+            context.SaveChanges();
             return RedirectToAction("List");
+        }
+        [HttpPost]
+        public IActionResult Save(Technician tech)
+        {
+            if (tech.TechnicianID == 0)
+            {
+                ViewBag.Action = "Add";
+            }
+            else
+            {
+                ViewBag.Action = "Edit";
+            }
+            if (ModelState.IsValid)
+            {
+                if (ViewBag.Action == "Add")
+                {
+                    context.Technicians.Add(tech);
+                }
+                else
+                {
+                    context.Technicians.Update(tech);
+                }
+                context.SaveChanges();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return View("AddEdit", tech);
+            }
+
         }
     }
 }

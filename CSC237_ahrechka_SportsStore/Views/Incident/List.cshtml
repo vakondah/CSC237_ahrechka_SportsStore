@@ -22,8 +22,8 @@
         {
             <tr>
                 <td>@incident.Title</td>
-                <td>@incident.CustomerID</td>
-                <td>@incident.ProductID</td>
+                <td>@incident.Customer.FullName</td>
+                <td>@incident.Product.Name</td>
                 <td>@incident.DateOpened.ToShortDateString()</td>
                 <td>
                     <a asp-action="Edit"

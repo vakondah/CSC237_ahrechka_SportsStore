@@ -32,7 +32,7 @@ namespace CSC237_ahrechka_SportsStore.Models
 
         [Required]
         public string CountryID { get; set; }// foreign key 
-        [Required]
+        
         public Country Country { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

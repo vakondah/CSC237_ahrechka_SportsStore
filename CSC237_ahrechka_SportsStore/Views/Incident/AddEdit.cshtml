@@ -10,9 +10,9 @@
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
-        <label asp-for="IncidentID">Customer</label>
-        <select asp-for="IncidentID" class="form-control">
-            <option value="0">Select Customer...</option>
+        <label asp-for="CustomerID">Customer</label>
+        <select asp-for="CustomerID" class="form-control">
+            <option value="">Select Customer...</option>
             @foreach (Customer c in ViewBag.Customers)
             {
                 <option value="@c.CustomerID">@c.FullName</option>
@@ -20,8 +20,8 @@
         </select>
     </div>
     <div class="form-group">
-        <label asp-for="IncidentID">Product</label>
-        <select asp-for="IncidentID" class="form-control">
+        <label asp-for="ProductID">Product</label>
+        <select asp-for="ProductID" class="form-control">
 
             @foreach (Product p in ViewBag.Products)
             {
@@ -38,8 +38,8 @@
         <input asp-for="Description" class="form-control" />
     </div>
     <div class="form-group">
-        <label asp-for="IncidentID">Technician</label>
-        <select asp-for="IncidentID" class="form-control">
+        <label asp-for="TechnicianID">Technician</label>
+        <select asp-for="TechnicianID" class="form-control">
             <option value="0">Add Technician...</option>
             @foreach (Technician t in ViewBag.Technicians)
             {

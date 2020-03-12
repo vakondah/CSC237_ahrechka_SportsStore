@@ -8,6 +8,7 @@ namespace CSC237_ahrechka_SportsStore.Models
 {
     public class Incident
     {
+        
         public int IncidentID { get; set; }
 
         [Required]

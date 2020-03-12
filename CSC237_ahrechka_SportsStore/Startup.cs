@@ -9,6 +9,7 @@ using CSC237_ahrechka_SportsStore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,11 +28,9 @@ namespace CSC237_ahrechka_SportsStore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IProductRepository, MockProductRepository>();
-            services.AddScoped<ICountryRepository, MockCountryRepository>();
-            services.AddScoped<ICustomerRepository, MockCustomerRepository>();
-            services.AddScoped<IIncidentRepository, MockIncidentRepository>();
-            services.AddScoped<ITechnicianRepository, MockTechnicianRepository>();
+            services.AddDbContext<SportsProContext>(options =>
+            options.UseSqlServer(
+                Configuration.GetConnectionString("SportsPro")));
             
             services.AddControllersWithViews();
 
