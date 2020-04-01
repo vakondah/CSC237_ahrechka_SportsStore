@@ -15,7 +15,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
             context = ctx;
         }
 
-        [Route("Products")]
+        [Route("products")]
         public IActionResult List()
         {
             ViewBag.Title = "Product List";

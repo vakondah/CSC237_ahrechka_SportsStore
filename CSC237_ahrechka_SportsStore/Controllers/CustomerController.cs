@@ -16,7 +16,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         }
 
 
-        [Route("Customers")]
+        [Route("customers")]
         public IActionResult List()
         {
             

@@ -11,12 +11,12 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class HomeController : Controller
     {
-
+        [Route("/")]
         public IActionResult Index()
         {
             return View();
         }
-        [Route("[action]")]
+        [Route("about")]
         public IActionResult About()
         {
             return View();

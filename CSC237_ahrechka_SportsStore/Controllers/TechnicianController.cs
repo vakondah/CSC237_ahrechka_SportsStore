@@ -16,7 +16,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
             context = ctx;
         }
 
-        [Route("Technicians")]
+        [Route("technicians")]
         public IActionResult List()
         {
             ViewBag.Title = "Technician List";

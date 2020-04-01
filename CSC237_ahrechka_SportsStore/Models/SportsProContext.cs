@@ -301,6 +301,7 @@ namespace CSC237_ahrechka_SportsStore.Models
                     DateClosed = null
                 }
                 );
+
         }
     }
 }
