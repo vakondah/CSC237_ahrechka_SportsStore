@@ -1,4 +1,5 @@
 ﻿using CSC237_ahrechka_SportsStore.Models;
+using CSC237_ahrechka_SportsStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,39 +26,56 @@ namespace CSC237_ahrechka_SportsStore.Controllers
                  .Include(i => i.Product)
                  .OrderBy(i => i.DateOpened)
                  .ToList();
-            
-            return View(incidents);
-        }
-        public void StoreListsInViewBag()
-        {
-            //ViewBag.Action = "Edit";
-            ViewBag.Customers = context.Customers
-                .OrderBy(c => c.FirstName)
-                .ToList();
-            ViewBag.Products = context.Products
-                .OrderBy(p => p.Name)
-                .ToList();
-            ViewBag.Technicians = context.Technicians
-                .OrderBy(t => t.Name)
-                .ToList();
+
+            // To use view model create new instance of IncidentListViewModel:
+            IncidentListViewModel model = new IncidentListViewModel()
+            {
+                Incidents = incidents
+            };
+            // pass model instead of List<Incident>:
+            return View(model);
         }
 
+        // StoreListsInViewBag() was replased with 
+        // GetViewModel()
+
+        // helper method:
+        private IncidentViewModel GetViewModel()
+        {
+            IncidentViewModel model = new IncidentViewModel
+            {
+                Customers = context.Customers
+                    .OrderBy(c => c.FirstName)
+                    .ToList(),
+                Products = context.Products
+                    .OrderBy(p => p.Name)
+                    .ToList(),
+                 Technicians = context.Technicians
+                    .OrderBy(t => t.Name)
+                    .ToList()
+            };
+            return model;
+        }
         [HttpGet]// display view without info
         public IActionResult Add()
         {
-            ViewBag.Action = "Add";
-            StoreListsInViewBag();
-            return View("AddEdit", new Incident());
+            IncidentViewModel model = GetViewModel();
+            model.Incident = new Incident();
+            model.Action = "Add";
+           // model passes instead of new Incident():
+            return View("AddEdit", model);
         }
         
 
         [HttpGet]// Here we add info into view
         public IActionResult Edit(int id)
         {
-            ViewBag.Action = "Edit";
-            StoreListsInViewBag();
+            IncidentViewModel model = GetViewModel();
             var incident = context.Incidents.Find(id);
-            return View("AddEdit", incident);
+            model.Incident = incident;
+            model.Action = "Edit";
+           
+            return View("AddEdit", model);
         }
         [HttpGet]// delete from  db
         public IActionResult Delete(int id)
@@ -75,32 +93,32 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save(Incident i)
+        public IActionResult Save(IncidentViewModel model)
         {
-            if (i.IncidentID == 0)
+            if (model.Incident.IncidentID == 0)
             {
-                ViewBag.Action = "Add";
+                model.Action = "Add";
             }
             else
             {
-                ViewBag.Action = "Edit";
+                model.Action = "Edit";
             }
             if (ModelState.IsValid)
             {
-                if (ViewBag.Action == "Add")
+                if (model.Action == "Add")
                 {
-                    context.Incidents.Add(i);
+                    context.Incidents.Add(model.Incident);
                 }
                 else
                 {
-                    context.Incidents.Update(i);
+                    context.Incidents.Update(model.Incident);
                 }
                 context.SaveChanges();
                 return RedirectToAction("List");
             }
             else
             {
-                return View("AddEdit", i);
+                return View("AddEdit", model);
             }
 
         }

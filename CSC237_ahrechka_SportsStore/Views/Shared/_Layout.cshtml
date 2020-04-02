@@ -60,6 +60,12 @@
     </header>
     <div class="container">
         <main role="main" class="pb-5">
+            @if (TempData.Keys.Contains("message"))
+            {
+                <h4 class="bg-info text-center text-white p-2 rounded">
+                    @TempData["message"]
+                </h4>
+            }
             @RenderBody()
         </main>
     </div>
