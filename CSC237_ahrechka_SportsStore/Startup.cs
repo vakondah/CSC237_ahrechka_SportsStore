@@ -31,7 +31,11 @@ namespace CSC237_ahrechka_SportsStore
             services.AddDbContext<SportsProContext>(options =>
             options.UseSqlServer(
                 Configuration.GetConnectionString("SportsPro")));
-            
+            // services allow to use session.
+            // must be before AddControllersWithViews()
+            services.AddMemoryCache();
+            services.AddSession();
+
             services.AddControllersWithViews();
 
             services.AddRouting(options =>
@@ -58,6 +62,8 @@ namespace CSC237_ahrechka_SportsStore
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
 
