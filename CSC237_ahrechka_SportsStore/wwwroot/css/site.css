@@ -26,3 +26,7 @@ body {
   white-space: nowrap;
   line-height: 40px; /* Vertically center the text there */
 }
+.input-validation-error{
+    border: 2px solid #dc3545;
+    background-color: #faebd7;
+}

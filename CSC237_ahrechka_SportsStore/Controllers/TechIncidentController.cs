@@ -44,7 +44,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         [HttpPost]
          public IActionResult List(Technician technician)
         {
-            // cheking Session object:
+            // setting Session object:
             HttpContext.Session.SetInt32("techID", technician.TechnicianID);
             if (technician.TechnicianID == 0)
             {

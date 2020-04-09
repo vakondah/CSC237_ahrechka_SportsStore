@@ -18,7 +18,7 @@ namespace CSC237_ahrechka_SportsStore.Models
         [Required]
         public int ProductID { get; set; }
         public Product Product { get; set; }
-
+        
         public int? TechnicianID { get; set; }
         public Technician Technician { get; set; }
 

@@ -18,22 +18,38 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         }
 
         [Route("incidents")]
-        public IActionResult List()
+        public IActionResult List(string filter = "all")
         {
-            ViewBag.Title = "Incident List";
-            List <Incident> incidents = context.Incidents
-                 .Include(i => i.Customer)
-                 .Include(i => i.Product)
-                 .OrderBy(i => i.DateOpened)
-                 .ToList();
-
             // To use view model create new instance of IncidentListViewModel:
             IncidentListViewModel model = new IncidentListViewModel()
             {
-                Incidents = incidents
+                Filter = filter
             };
+            ViewBag.Title = "Incident List";
+            IQueryable<Incident> query = context.Incidents
+                 .Include(i => i.Customer)
+                 .Include(i => i.Product)
+                 .OrderBy(i => i.DateOpened);
+
+            if (filter == "unassigned")
+            {
+                query = query.Where(i => i.TechnicianID == null);
+            }
+            if (filter == "open")
+            {
+                query = query.Where(i => i.DateClosed == null);
+            }
+
+            List<Incident> incidents = query.ToList();
+            model.Incidents = incidents;
+
             // pass model instead of List<Incident>:
             return View(model);
+        }
+
+        public IActionResult Filter(string id)
+        {
+            return RedirectToAction("List", new { Filter = id });
         }
 
         // StoreListsInViewBag() was replased with 
@@ -93,34 +109,34 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save(IncidentViewModel model)
+        public IActionResult Save(Incident incident)
         {
-            if (model.Incident.IncidentID == 0)
+            if (incident.IncidentID == 0)
             {
-                model.Action = "Add";
+                ViewBag.Action = "Add";
             }
             else
             {
-                model.Action = "Edit";
+                ViewBag.Action = "Edit";
             }
+
             if (ModelState.IsValid)
             {
-                if (model.Action == "Add")
+                if (ViewBag.Action == "Add")
                 {
-                    context.Incidents.Add(model.Incident);
+                    context.Incidents.Add(incident);
                 }
                 else
                 {
-                    context.Incidents.Update(model.Incident);
+                    context.Incidents.Update(incident);
                 }
                 context.SaveChanges();
                 return RedirectToAction("List");
             }
             else
             {
-                return View("AddEdit", model);
+                return View("AddEdit", incident);
             }
-
         }
 
     }
