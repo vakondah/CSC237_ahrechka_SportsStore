@@ -1,4 +1,5 @@
-﻿using CSC237_ahrechka_SportsStore.Models;
+﻿using CSC237_ahrechka_SportsStore.DataLayer;
+using CSC237_ahrechka_SportsStore.Models;
 using CSC237_ahrechka_SportsStore.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,30 +13,32 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class TechIncidentController: Controller
     {
-        private SportsProContext context { get; set; }
-        public TechIncidentController(SportsProContext ctx)
+        private SportsProUnit data { get; set; }
+        public TechIncidentController(SportsProUnit ctx)
         {
-            context = ctx;
+            data = ctx;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            ViewBag.Technicians = context.Technicians.OrderBy(n => n.Name).ToList();
+            ViewBag.Technicians = data.Technicians.List(new QueryOptions<Technician>
+            {
+                OrderBy = c => c.Name
+            });
             // checking if there any technician in Session object:
-            int? techID = HttpContext.Session.GetInt32("techID");
+            int techID = HttpContext.Session.GetInt32("techID") ?? 0;
+
             // creating empty Technician:
             Technician technician;
             
-            if (techID == null)
+            if (techID == 0)
             {
                 technician = new Technician();
             }
             else
             {
-                technician = context.Technicians
-                    .Where(t => t.TechnicianID == techID)
-                    .FirstOrDefault();
+                technician = data.Technicians.Get(techID);
             }
 
             return View(technician);
@@ -62,14 +65,18 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         {
             var model = new TechIncidentViewModel
             {
-                Technician = context.Technicians.Find(id),
-                Incidents = context.Incidents
-                .Include(i => i.Customer)
-                .Include(i => i.Product)
-                .OrderBy(i => i.DateOpened)
-                .Where(i => i.TechnicianID == id)
-                .Where(i => i.DateClosed == null)
-                .ToList()
+                Technician = data.Technicians.Get(id),
+
+                Incidents = data.Incidents.List(new QueryOptions<Incident>
+                {
+                    Includes = "Customer, Product",
+                    OrderBy = i => i.DateOpened,
+                    WhereClauses = new WhereClauses<Incident>
+                    {
+                        { i => i.TechnicianID == id},
+                        {i => i.DateClosed == null }
+                    }
+                })
             };
             return View(model);
         }
@@ -77,29 +84,29 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            int? techID = HttpContext.Session.GetInt32("techID");
+            int techID = HttpContext.Session.GetInt32("techID") ?? 0;
             var model = new TechIncidentViewModel
             {
-                Technician = context.Technicians.Find(techID),
-                Incident = context.Incidents
-                .Include(i => i.Customer)
-                .Include(i => i.Product)
-                .FirstOrDefault(i => i.IncidentID == id)
+                Technician = data.Technicians.Get(techID),
+                Incident = data.Incidents.Get(new QueryOptions<Incident>
+                { 
+                    Includes = "Customer, Product",
+                    Where = i => i.IncidentID == id
+                })
+                
             };
-
-
             return View(model);
         }
 
         [HttpPost]
         public IActionResult Edit(IncidentViewModel model)
         {
-            Incident i = context.Incidents.Find(model.Incident.IncidentID);
+            Incident i = data.Incidents.Get(model.Incident.IncidentID);
             i.Description = model.Incident.Description;
             i.DateClosed = model.Incident.DateClosed;
 
-            context.Incidents.Update(i);
-            context.SaveChanges();
+            data.Incidents.Update(i);
+            data.Save();
 
             int? techID = HttpContext.Session.GetInt32("techID");
             return RedirectToAction("List", new { id = techID });

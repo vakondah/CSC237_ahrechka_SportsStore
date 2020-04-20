@@ -1,15 +1,18 @@
-﻿using System;
+﻿using CSC237_ahrechka_SportsStore.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CSC237_ahrechka_SportsStore.Models
+namespace CSC237_ahrechka_SportsStore.DataLayer.SeedData
 {
-    public class MockTechnicianRepository : ITechnicianRepository
+    internal class SeedTechnician : IEntityTypeConfiguration<Technician>
     {
-        public IEnumerable<Technician> GetTechnicians =>
-            new List<Technician>
-            {
+        public void Configure(EntityTypeBuilder<Technician> builder)
+        {
+            builder.HasData(
                 new Technician
                 {
                     TechnicianID = 11,
@@ -45,11 +48,7 @@ namespace CSC237_ahrechka_SportsStore.Models
                     Email = "gfiori@sportsprosoftware.com",
                     Phone = "800-555-0459"
                 }
-            };
-
-        public Technician GetTechnicianById(int technicianId)
-        {
-            return GetTechnicians.FirstOrDefault(t => t.TechnicianID == technicianId);
+                );
         }
     }
 }

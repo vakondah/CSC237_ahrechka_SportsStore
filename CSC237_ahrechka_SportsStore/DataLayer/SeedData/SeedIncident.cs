@@ -1,26 +1,29 @@
-﻿using System;
+﻿using CSC237_ahrechka_SportsStore.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CSC237_ahrechka_SportsStore.Models
+namespace CSC237_ahrechka_SportsStore.DataLayer.SeedData
 {
-    public class MockIncidentRepository : IIncidentRepository
+    internal class SeedIncident : IEntityTypeConfiguration<Incident>
     {
-        public IEnumerable<Incident> GetIncidents =>
-            new List<Incident>
-            {
-                new Incident
-                {
-                    IncidentID = 1,
-                    CustomerID = 1010,
-                    ProductID = 1,
-                    TechnicianID = 11,
-                    Title = "Could not install",
-                    Description = "Media appears to be bad.",
-                    DateOpened = DateTime.Parse("2020-01-08"),
-                    DateClosed = DateTime.Parse("2020-01-10")
-                },
+        public void Configure(EntityTypeBuilder<Incident> builder)
+        {
+           builder.HasData(
+                 new Incident
+                 {
+                     IncidentID = 1,
+                     CustomerID = 1010,
+                     ProductID = 1,
+                     TechnicianID = 11,
+                     Title = "Could not install",
+                     Description = "Media appears to be bad.",
+                     DateOpened = DateTime.Parse("2020-01-08"),
+                     DateClosed = DateTime.Parse("2020-01-10")
+                 },
                 new Incident
                 {
                     IncidentID = 2,
@@ -54,11 +57,7 @@ namespace CSC237_ahrechka_SportsStore.Models
                     DateOpened = DateTime.Parse("2020-01-10"),
                     DateClosed = null
                 }
-            };
-
-        public Incident GetIncidentById(int incidentId)
-        {
-            return GetIncidents.FirstOrDefault(i => i.IncidentID == incidentId);
+                );
         }
     }
 }

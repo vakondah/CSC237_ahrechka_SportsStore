@@ -18,7 +18,7 @@
     <div class="row form-group">
         <label asp-for="FirstName" class="col-sm-3">First Name</label>
         <div class="col-sm-6">
-            <input asp-for="FirstName" class="form-control" />
+            <input asp-for="FirstName" class="form-control " />
         </div>
         <div class="col-sm-3">
             <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -76,7 +76,7 @@
                     asp-items="@(new SelectList(ViewBag.Countries,
                              "CountryID", "Name", Model.CountryID))"
                     class="form-control">
-                <option value="0">Select a Country...</option>
+                <option value="XX">Select a Country...</option>
             </select>
         </div>
         <div class="col-sm-3">

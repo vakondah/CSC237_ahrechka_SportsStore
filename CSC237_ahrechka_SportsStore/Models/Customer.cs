@@ -50,6 +50,9 @@ namespace CSC237_ahrechka_SportsStore.Models
         [Remote("CheckEmail", "Validation", AdditionalFields = "CustomerID")]
         public string Email { get; set; }
 
+        // navigation property for linking entity
+        public ICollection<Registration> Registrations { get; set; }
+
         // readonly property
         public string FullName => FirstName + " " + LastName;
 

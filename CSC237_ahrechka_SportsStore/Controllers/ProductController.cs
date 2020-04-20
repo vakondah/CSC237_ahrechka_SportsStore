@@ -1,4 +1,5 @@
-﻿using CSC237_ahrechka_SportsStore.Models;
+﻿using CSC237_ahrechka_SportsStore.DataLayer;
+using CSC237_ahrechka_SportsStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,10 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class ProductController: Controller
     {
-        private SportsProContext context;
+        private Repository<Product> data { get; set; }
         public ProductController(SportsProContext ctx)
         {
-            context = ctx;
+            data = new Repository<Product>(ctx);
         }
 
         //This method returns ViewResult object
@@ -21,9 +22,13 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public ViewResult List()
         {
             ViewBag.Title = "Product List";
-            List<Product> productList = context.Products.ToList();
-            
-            return View(productList);
+
+            var products = this.data.List(new QueryOptions<Product>
+            {
+                OrderBy = p => p.ReleaseDate
+            });
+
+            return View(products);
         }
 
 
@@ -44,7 +49,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public ViewResult Edit(int id)
         {
             ViewBag.Action = "Edit";
-            var product = context.Products.Find(id);
+            var product = data.Get(id);
             return View("AddEdit", product);
         }
 
@@ -53,7 +58,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
        [HttpGet]
         public ViewResult Delete(int id)
         {
-            var product = context.Products.Find(id);
+            var product = data.Get(id);
             return View(product);
         }
 
@@ -64,8 +69,8 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         {
             // TODO: TempData displays message without product name. Why?
             string message = product.Name + " was deleted.";
-            context.Products.Remove(product);
-            context.SaveChanges();
+            data.Delete(product);
+            data.Save();
             TempData["message"] = message;
             return RedirectToAction("List");
         }
@@ -76,33 +81,33 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public IActionResult Save(Product product)
         {
             string message;
-            if (product.ProductID == 0)
-            {
-                ViewBag.Action = "Add";
-            }
-            else
-            {
-                ViewBag.Action = "Edit";
-            }
             if (ModelState.IsValid)
             {
-                if (ViewBag.Action == "Add")
+                if (product.ProductID == 0)
                 {
-                    context.Products.Add(product);
+                    data.Insert(product);
                     message = product.Name + " was added.";
                 }
                 else
                 {
-                    context.Products.Update(product);
+                    data.Update(product);
                     message = product.Name + " was updated.";
                 }
-                context.SaveChanges();
+                data.Save();
                 TempData["message"] = message;
                 return RedirectToAction("List");
             }
             else
             {
-                return View("AddEdit", product);
+                if (product.ProductID == 0)
+                {
+                    ViewBag.Action = "Add";
+                }
+                else
+                {
+                    ViewBag.Action = "Edit";
+                }
+                return View(product);
             }
 
         }

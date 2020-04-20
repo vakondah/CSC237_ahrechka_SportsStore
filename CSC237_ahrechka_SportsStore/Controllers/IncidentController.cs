@@ -1,4 +1,5 @@
-﻿using CSC237_ahrechka_SportsStore.Models;
+﻿using CSC237_ahrechka_SportsStore.DataLayer;
+using CSC237_ahrechka_SportsStore.Models;
 using CSC237_ahrechka_SportsStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,13 +12,13 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class IncidentController: Controller
     {
-        private SportsProContext context;
+        private SportsProUnit data { get; set; }
         public IncidentController(SportsProContext ctx)
         {
-            context = ctx;
+            data = new SportsProUnit(ctx);
         }
 
-        [Route("incidents")]
+        [Route("[controller]s")]
         public IActionResult List(string filter = "all")
         {
             // To use view model create new instance of IncidentListViewModel:
@@ -26,21 +27,23 @@ namespace CSC237_ahrechka_SportsStore.Controllers
                 Filter = filter
             };
             ViewBag.Title = "Incident List";
-            IQueryable<Incident> query = context.Incidents
-                 .Include(i => i.Customer)
-                 .Include(i => i.Product)
-                 .OrderBy(i => i.DateOpened);
+
+            var options = new QueryOptions<Incident>
+            {
+                Includes = "Customer, Product",
+                OrderBy = i => i.DateOpened
+            };
 
             if (filter == "unassigned")
             {
-                query = query.Where(i => i.TechnicianID == null);
+                options.Where = i => i.TechnicianID == null;
             }
             if (filter == "open")
             {
-                query = query.Where(i => i.DateClosed == null);
+                options.Where = i => i.DateClosed == null;
             }
 
-            List<Incident> incidents = query.ToList();
+            IEnumerable<Incident> incidents = data.Incidents.List(options);
             model.Incidents = incidents;
 
             // pass model instead of List<Incident>:
@@ -60,15 +63,20 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         {
             IncidentViewModel model = new IncidentViewModel
             {
-                Customers = context.Customers
-                    .OrderBy(c => c.FirstName)
-                    .ToList(),
-                Products = context.Products
-                    .OrderBy(p => p.Name)
-                    .ToList(),
-                 Technicians = context.Technicians
-                    .OrderBy(t => t.Name)
-                    .ToList()
+                Customers = data.Customers.List(new QueryOptions<Customer>
+                {
+                    OrderBy = c => c.FirstName
+                }),
+
+                Products = data.Products.List(new QueryOptions<Product>
+                {
+                    OrderBy = c => c.Name
+                }),
+                Technicians = data.Technicians.List(new QueryOptions<Technician>
+                {
+                    OrderBy = c => c.Name
+                })
+                    
             };
             return model;
         }
@@ -87,7 +95,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public IActionResult Edit(int id)
         {
             IncidentViewModel model = GetViewModel();
-            var incident = context.Incidents.Find(id);
+            var incident = data.Incidents.Get(id);
             model.Incident = incident;
             model.Action = "Edit";
            
@@ -96,46 +104,47 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         [HttpGet]// delete from  db
         public IActionResult Delete(int id)
         {
-            var incident = context.Incidents.Find(id);
+            var incident = data.Incidents.Get(id);
             return View(incident);
         }
 
         [HttpPost]
         public IActionResult Delete(Incident incident)
         {
-            context.Incidents.Remove(incident);
-            context.SaveChanges();
+            data.Incidents.Delete(incident);
+            data.Save();
             return RedirectToAction("List");
         }
 
         [HttpPost]
         public IActionResult Save(Incident incident)
         {
-            if (incident.IncidentID == 0)
-            {
-                ViewBag.Action = "Add";
-            }
-            else
-            {
-                ViewBag.Action = "Edit";
-            }
-
             if (ModelState.IsValid)
             {
-                if (ViewBag.Action == "Add")
+                if (incident.IncidentID == 0)
                 {
-                    context.Incidents.Add(incident);
+                    data.Incidents.Insert(incident);
                 }
                 else
                 {
-                    context.Incidents.Update(incident);
+                    data.Incidents.Update(incident);
                 }
-                context.SaveChanges();
+                data.Save();
                 return RedirectToAction("List");
             }
             else
             {
-                return View("AddEdit", incident);
+                IncidentViewModel model = GetViewModel();
+                model.Incident = incident;
+                if (incident.IncidentID == 0)
+                {
+                    model.Action = "Add";
+                }
+                else
+                {
+                    model.Action = "Edit";
+                }
+                return View("AddEdit", model);
             }
         }
 

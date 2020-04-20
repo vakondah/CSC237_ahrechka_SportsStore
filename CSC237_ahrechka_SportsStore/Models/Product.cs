@@ -22,5 +22,8 @@ namespace CSC237_ahrechka_SportsStore.Models
         public decimal YearlyPrice { get; set; }
 
         public DateTime ReleaseDate { get; set; } = DateTime.Now;
+
+        // navigation property for linking entity
+        public ICollection<Registration> Registrations { get; set; }
     }
 }

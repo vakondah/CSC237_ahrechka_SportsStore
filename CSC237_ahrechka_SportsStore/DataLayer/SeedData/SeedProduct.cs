@@ -1,15 +1,18 @@
-﻿using System;
+﻿using CSC237_ahrechka_SportsStore.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CSC237_ahrechka_SportsStore.Models
+namespace CSC237_ahrechka_SportsStore.DataLayer.SeedData
 {
-    public class MockProductRepository : IProductRepository
+    internal class SeedProduct : IEntityTypeConfiguration<Product>
     {
-        public IEnumerable<Product> GetProducts =>
-            new List<Product>
-            {
+        public void Configure(EntityTypeBuilder<Product> builder)
+        {
+            builder.HasData(
                 new Product
                 {
                     ProductID = 1,
@@ -66,11 +69,7 @@ namespace CSC237_ahrechka_SportsStore.Models
                     YearlyPrice = 5.99M,
                     ReleaseDate = DateTime.Parse("2018-02-15 00:00:00.000")
                 }
-            };
-
-        public Product GetProductById(int productId)
-        {
-            return GetProducts.FirstOrDefault(p => p.ProductID == productId);
+                );
         }
     }
 }

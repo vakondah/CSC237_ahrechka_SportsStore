@@ -1,15 +1,18 @@
-﻿using System;
+﻿using CSC237_ahrechka_SportsStore.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CSC237_ahrechka_SportsStore.Models
+namespace CSC237_ahrechka_SportsStore.DataLayer.SeedData
 {
-    public class MockCountryRepository : ICountryRepository
+    internal class SeedCountry : IEntityTypeConfiguration<Country>
     {
-        public IEnumerable<Country> Countries =>
-            new List<Country>
-            {
+        public void Configure(EntityTypeBuilder<Country> builder)
+        {
+           builder.HasData(
                 new Country { CountryID = "AU", Name = "Australia" },
                 new Country { CountryID = "AT", Name = "Austria" },
                 new Country { CountryID = "BE", Name = "Belgium" },
@@ -50,10 +53,7 @@ namespace CSC237_ahrechka_SportsStore.Models
                 new Country { CountryID = "US", Name = "United States" },
                 new Country { CountryID = "VN", Name = "Vietnam" },
                 new Country { CountryID = "ZW", Name = "Zimbabwe" }
-            };
-        public Country GetCountryById(string countryId)
-        {
-            return Countries.FirstOrDefault(c => c.CountryID == countryId);
+                );
         }
     }
 }
