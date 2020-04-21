@@ -1,4 +1,7 @@
-﻿using CSC237_ahrechka_SportsStore.DataLayer;
+﻿//Aliaksandra Hrechka
+//CIS237
+//04/21/2020
+using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using CSC237_ahrechka_SportsStore.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +16,12 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class TechIncidentController: Controller
     {
-        private SportsProUnit data { get; set; }
-        public TechIncidentController(SportsProUnit ctx)
+        private ISportsProUnit data { get; set; }
+        private ISession session { get; set; }
+        public TechIncidentController(ISportsProUnit unit, IHttpContextAccessor accessor)//Check it!
         {
-            data = ctx;
+            data = unit;
+            session = accessor.HttpContext.Session;
         }
 
         [HttpGet]

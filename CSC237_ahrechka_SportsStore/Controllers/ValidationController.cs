@@ -1,4 +1,7 @@
-﻿using CSC237_ahrechka_SportsStore.DataLayer;
+﻿//Aliaksandra Hrechka
+//CIS237
+//04/21/2020
+using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,10 +13,9 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class ValidationController: Controller
     {
-        private Repository<Customer> data { get; set; }
-        public ValidationController(SportsProContext ctx) => data = new Repository<Customer>(ctx);
 
-        public JsonResult CheckEmail(string emailAddress, int customerID)
+
+        public JsonResult CheckEmail(string emailAddress, int customerID, [FromServices] IRepository<Customer> data)
         {
             if (customerID == 0) // only check for new customer, dont check on edit
             {

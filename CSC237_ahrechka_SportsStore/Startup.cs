@@ -1,10 +1,11 @@
 //Aliaksandra Hrechka
 //CIS237
-//03/10/2020
+//04/21/2020
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +44,10 @@ namespace CSC237_ahrechka_SportsStore
                 options.LowercaseUrls = true;
                 options.AppendTrailingSlash = true;
             });
+
+            services.AddTransient<ISportsProUnit, SportsProUnit>();
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

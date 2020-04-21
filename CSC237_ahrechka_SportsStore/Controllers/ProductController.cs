@@ -1,4 +1,7 @@
-﻿using CSC237_ahrechka_SportsStore.DataLayer;
+﻿//Aliaksandra Hrechka
+//CIS237
+//04/21/2020
+using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,10 +13,10 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class ProductController: Controller
     {
-        private Repository<Product> data { get; set; }
-        public ProductController(SportsProContext ctx)
+        private IRepository<Product> data { get; set; }
+        public ProductController(IRepository<Product> rep)
         {
-            data = new Repository<Product>(ctx);
+            data = rep;
         }
 
         //This method returns ViewResult object

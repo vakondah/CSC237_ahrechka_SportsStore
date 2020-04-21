@@ -8,7 +8,7 @@ namespace CSC237_ahrechka_SportsStore.Models
 {
     public static class Check
     {
-        public static string EmailExists(Repository<Customer> data, string email)
+        public static string EmailExists(IRepository<Customer> data, string email)
         {
             string msg = "";
             if (!string.IsNullOrEmpty(email))

@@ -1,4 +1,7 @@
-﻿using CSC237_ahrechka_SportsStore.DataLayer;
+﻿//Aliaksandra Hrechka
+//CIS237
+//04/21/2020
+using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using CSC237_ahrechka_SportsStore.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -13,8 +16,8 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class RegistrationController : Controller
     {
-        private SportsProUnit data { get; set; }
-        public RegistrationController(SportsProContext ctx) => data = new SportsProUnit(ctx);
+        private ISportsProUnit data { get; set; }
+        public RegistrationController(ISportsProUnit unit) => data = unit;
 
         public IActionResult GetCustomer()
         {

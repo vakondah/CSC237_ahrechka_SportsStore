@@ -12,8 +12,8 @@ namespace CSC237_ahrechka_SportsStore.DataLayer
         private SportsProContext context { get; set; }
         public SportsProUnit(SportsProContext ctx) => context = ctx;
 
-        private Repository<Product> productRepo;
-        public Repository<Product> Products
+        private IRepository<Product> productRepo;
+        public IRepository<Product> Products
         {
             get
             {
@@ -23,8 +23,8 @@ namespace CSC237_ahrechka_SportsStore.DataLayer
             }
         }
 
-        private Repository<Country> countryRepo;
-        public Repository<Country> Countries
+        private IRepository<Country> countryRepo;
+        public IRepository<Country> Countries
         {
             get
             {
@@ -34,8 +34,8 @@ namespace CSC237_ahrechka_SportsStore.DataLayer
             }
         }
 
-        private Repository<Customer> customerRepo;
-        public Repository<Customer> Customers
+        private IRepository<Customer> customerRepo;
+        public IRepository<Customer> Customers
         {
             get
             {
@@ -45,8 +45,8 @@ namespace CSC237_ahrechka_SportsStore.DataLayer
             }
         }
 
-        private Repository<Incident> incidentRepo;
-        public Repository<Incident> Incidents
+        private IRepository<Incident> incidentRepo;
+        public IRepository<Incident> Incidents
         {
             get
             {
@@ -56,8 +56,8 @@ namespace CSC237_ahrechka_SportsStore.DataLayer
             }
         }
 
-        private Repository<Registration> registrationRepo;
-        public Repository<Registration> Registrations
+        private IRepository<Registration> registrationRepo;
+        public IRepository<Registration> Registrations
         {
             get
             {
@@ -67,8 +67,8 @@ namespace CSC237_ahrechka_SportsStore.DataLayer
             }
         }
 
-        private Repository<Technician> technicianRepo;
-        public Repository<Technician> Technicians
+        private IRepository<Technician> technicianRepo;
+        public IRepository<Technician> Technicians
         {
             get
             {

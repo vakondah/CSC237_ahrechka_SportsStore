@@ -1,4 +1,7 @@
-﻿using CSC237_ahrechka_SportsStore.DataLayer;
+﻿//Aliaksandra Hrechka
+//CIS237
+//04/21/2020
+using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using CSC237_ahrechka_SportsStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +15,10 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class IncidentController: Controller
     {
-        private SportsProUnit data { get; set; }
-        public IncidentController(SportsProContext ctx)
+        private IRepository<Incident> data { get; set; }
+        public IncidentController(IRepository<Incident> rep)
         {
-            data = new SportsProUnit(ctx);
+            data = rep;
         }
 
         [Route("[controller]s")]
@@ -43,7 +46,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
                 options.Where = i => i.DateClosed == null;
             }
 
-            IEnumerable<Incident> incidents = data.Incidents.List(options);
+            IEnumerable<Incident> incidents = data.List(options);
             model.Incidents = incidents;
 
             // pass model instead of List<Incident>:
@@ -58,34 +61,14 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         // StoreListsInViewBag() was replased with 
         // GetViewModel()
 
-        // helper method:
-        private IncidentViewModel GetViewModel()
-        {
-            IncidentViewModel model = new IncidentViewModel
-            {
-                Customers = data.Customers.List(new QueryOptions<Customer>
-                {
-                    OrderBy = c => c.FirstName
-                }),
-
-                Products = data.Products.List(new QueryOptions<Product>
-                {
-                    OrderBy = c => c.Name
-                }),
-                Technicians = data.Technicians.List(new QueryOptions<Technician>
-                {
-                    OrderBy = c => c.Name
-                })
-                    
-            };
-            return model;
-        }
         [HttpGet]// display view without info
         public IActionResult Add()
         {
-            IncidentViewModel model = GetViewModel();
-            model.Incident = new Incident();
-            model.Action = "Add";
+            IncidentViewModel model = new IncidentViewModel
+            {
+                Incident = new Incident(),
+                Action = "Add"
+            };
            // model passes instead of new Incident():
             return View("AddEdit", model);
         }
@@ -94,24 +77,25 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         [HttpGet]// Here we add info into view
         public IActionResult Edit(int id)
         {
-            IncidentViewModel model = GetViewModel();
-            var incident = data.Incidents.Get(id);
-            model.Incident = incident;
-            model.Action = "Edit";
+            IncidentViewModel model = new IncidentViewModel
+            {
+                Incident = data.Get(id),
+                Action = "Edit"
+            };
            
             return View("AddEdit", model);
         }
         [HttpGet]// delete from  db
         public IActionResult Delete(int id)
         {
-            var incident = data.Incidents.Get(id);
+            var incident = data.Get(id);
             return View(incident);
         }
 
         [HttpPost]
         public IActionResult Delete(Incident incident)
         {
-            data.Incidents.Delete(incident);
+            data.Delete(incident);
             data.Save();
             return RedirectToAction("List");
         }
@@ -123,19 +107,22 @@ namespace CSC237_ahrechka_SportsStore.Controllers
             {
                 if (incident.IncidentID == 0)
                 {
-                    data.Incidents.Insert(incident);
+                    data.Insert(incident);
                 }
                 else
                 {
-                    data.Incidents.Update(incident);
+                    data.Update(incident);
                 }
                 data.Save();
                 return RedirectToAction("List");
             }
             else
             {
-                IncidentViewModel model = GetViewModel();
-                model.Incident = incident;
+                IncidentViewModel model = new IncidentViewModel
+                {
+                    Incident = incident
+            };
+                
                 if (incident.IncidentID == 0)
                 {
                     model.Action = "Add";
