@@ -27,10 +27,6 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            ViewBag.Technicians = data.Technicians.List(new QueryOptions<Technician>
-            {
-                OrderBy = c => c.Name
-            });
             // checking if there any technician in Session object:
             int techID = HttpContext.Session.GetInt32("techID") ?? 0;
 

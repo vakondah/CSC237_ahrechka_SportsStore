@@ -6,12 +6,9 @@
 <h1>Get Customer</h1>
 
 <form asp-action="List" method="post">
-    <select asp-for="CustomerID"
-            asp-items="@(new SelectList(ViewBag.Customers,
-                            "CustomerID", "FullName",
-                            Model.CustomerID.ToString()))"
-            class="form-control">
-        <option value="0">Select a customer...</option>
+    <select asp-for="CustomerID"  class="form-control">
+      <vc:customer-drop-down-options value="@Model.CustomerID" 
+          default-value="0" default-text="Select a customer..."/>
     </select>
     <button type="submit" class="btn btn-primary mt-2">Select</button>
 </form>

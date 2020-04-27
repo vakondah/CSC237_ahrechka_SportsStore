@@ -13,10 +13,10 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 {
     public class CustomerController : Controller
     {
-        private ISportsProUnit data{ get; set; }
-        public CustomerController(ISportsProUnit unit)
+        private IRepository<Customer> data{ get; set; }
+        public CustomerController(IRepository<Customer> rep)
         {
-            data = unit;
+            data = rep;
         }
 
 
@@ -24,7 +24,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public IActionResult List()
         {
 
-            var customers = data.Customers.List(new QueryOptions<Customer>
+            var customers = data.List(new QueryOptions<Customer>
             {
                 OrderBy = c => c.LastName
             });
@@ -35,21 +35,21 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public IActionResult Add()
         {
             ViewBag.Action = "Add";
-            ViewBag.Countries = GetCountryList();
+
             return View("AddEdit", new Customer());
         }
         [HttpGet]// Here we add info into view
         public IActionResult Edit(int id)
         {
             ViewBag.Action = "Edit";
-            ViewBag.Countries = GetCountryList();
-            var customer = data.Customers.Get(id);
+            
+            var customer = data.Get(id);
             return View("AddEdit", customer);
         }
         [HttpGet]// delete from  db?
         public IActionResult Delete(int id)
         {
-            var customer = data.Customers.Get(id);
+            var customer = data.Get(id);
             return View(customer);
         }
         // actual removing from db
@@ -57,7 +57,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
         public IActionResult Delete(Customer customer)
         {
             data.Save();
-            data.Customers.Delete(customer);
+            data.Delete(customer);
             return RedirectToAction("List");
         }
         // save for add and edit
@@ -71,7 +71,7 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 
             if (customer.CustomerID == 0 || TempData["OkEmail"] == null)// only cheks new customer
             {
-                string msg = Check.EmailExists(data.Customers, customer.Email);
+                string msg = Check.EmailExists(data, customer.Email);
                 if (!String.IsNullOrEmpty(msg))
                 {
                     ModelState.AddModelError(nameof(Customer.Email), msg);
@@ -82,11 +82,11 @@ namespace CSC237_ahrechka_SportsStore.Controllers
             {
                 if (customer.CustomerID == 0)
                 {
-                    data.Customers.Insert(customer);
+                    data.Insert(customer);
                 }
                 else
                 {
-                    data.Customers.Update(customer);
+                    data.Update(customer);
                 }
                 data.Save();
                 return RedirectToAction("List");
@@ -105,12 +105,5 @@ namespace CSC237_ahrechka_SportsStore.Controllers
             }
 
         }
-
-        // private helper method
-        IEnumerable<Country> GetCountryList() =>
-            data.Countries.List(new QueryOptions<Country>
-            {
-                OrderBy = c => c.Name
-            });
     }
 }

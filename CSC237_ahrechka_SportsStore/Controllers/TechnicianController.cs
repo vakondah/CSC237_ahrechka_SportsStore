@@ -4,10 +4,7 @@
 using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace CSC237_ahrechka_SportsStore.Controllers
 {

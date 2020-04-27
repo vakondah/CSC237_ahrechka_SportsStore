@@ -7,12 +7,14 @@
 <h1>Incident Manager</h1>
 
 <nav class="nav nav-pills mb-3">
-    <a asp-action="Filter" asp-route-id="all" class="nav-item nav-link
-       @(Model.Filter == "all" ? "active" : "")">All Incidents</a>
-    <a asp-action="Filter" asp-route-id="unassigned" class="nav-item nav-link
-       @(Model.Filter == "unassigned" ? "active" : "")">Unassigned Incidents</a>
-    <a asp-action="Filter" asp-route-id="open" class="nav-item nav-link
-       @(Model.Filter == "open" ? "active" : "")">Open Incidents</a>
+    <a asp-action="Filter" asp-route-id="all" my-filter="@Model.Filter"
+       class="nav-item nav-link">All Incidents</a>
+       
+    <a asp-action="Filter" asp-route-id="unassigned" my-filter="@Model.Filter"
+       class="nav-item nav-link">Unassigned Incidents</a>
+
+    <a asp-action="Filter" asp-route-id="open" my-filter="@Model.Filter"
+       class="nav-item nav-link">Open Incidents</a>
 </nav>
 
 <table class="table table-bordered table-striped">

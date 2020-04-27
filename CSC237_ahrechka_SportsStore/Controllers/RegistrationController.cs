@@ -7,10 +7,7 @@ using CSC237_ahrechka_SportsStore.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace CSC237_ahrechka_SportsStore.Controllers
 {
@@ -21,11 +18,6 @@ namespace CSC237_ahrechka_SportsStore.Controllers
 
         public IActionResult GetCustomer()
         {
-            ViewBag.Customers = data.Customers.List(new QueryOptions<Customer>
-            {
-                OrderBy = c => c.LastName
-            });
-                
             int custID = HttpContext.Session.GetInt32("custID") ?? 0;
 
             Customer customer;
