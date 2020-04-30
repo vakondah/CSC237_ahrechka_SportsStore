@@ -4,6 +4,7 @@
 using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using CSC237_ahrechka_SportsStore.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace CSC237_ahrechka_SportsStore.Controllers
 {
+    [Authorize]
     public class TechIncidentController: Controller
     {
         private ISportsProUnit data { get; set; }

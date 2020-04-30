@@ -41,9 +41,8 @@
                        
                     </div>
                 <div class="navbar-nav nav-bar-right">
-                    <a class="nav-item nav-link @(controller == "Home" && action == "About" ? "active" : "")"
-                       asp-controller="Home" asp-action="About">About</a>
-                       
+                    <vc:login-logout user="@User"/>
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="About">About</a>
                 </div>
             </nav>
         </nav>

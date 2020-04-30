@@ -3,11 +3,13 @@
 //04/21/2020
 using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace CSC237_ahrechka_SportsStore.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class TechnicianController: Controller
     {
         private IRepository<Technician> data { get; set; }

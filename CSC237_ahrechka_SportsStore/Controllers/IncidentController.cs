@@ -4,6 +4,7 @@
 using CSC237_ahrechka_SportsStore.DataLayer;
 using CSC237_ahrechka_SportsStore.Models;
 using CSC237_ahrechka_SportsStore.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace CSC237_ahrechka_SportsStore.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class IncidentController: Controller
     {
         private IRepository<Incident> data { get; set; }

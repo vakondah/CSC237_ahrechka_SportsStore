@@ -1,0 +1,18 @@
+﻿@model bool
+
+@if (Model == true)
+{
+    // authenticated user - welcome message and Log Out button
+    <form method="post" asp-action="Logout" asp-controller="Account" class="nav-item">
+        <span class="text-light mt-3"><b>Welcome, @User.Identity.Name</b></span>
+        <input class="text-light btn" type="submit" value="Log Out" />
+    </form>
+}
+else
+{
+    // anonymous user - Log In and register link
+    <a class="nav-item nav-link" asp-controller="Account" asp-action="Login">Log In</a>
+    <a class="nav-item nav-link" asp-controller="Account" asp-action="Register">Register</a>
+
+
+}

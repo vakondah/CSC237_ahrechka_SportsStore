@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace CSC237_ahrechka_SportsStore
 {
@@ -38,6 +39,15 @@ namespace CSC237_ahrechka_SportsStore
             services.AddSession();
 
             services.AddControllersWithViews();
+
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+
+            }).AddEntityFrameworkStores<SportsProContext>()
+              .AddDefaultTokenProviders();
 
             services.AddRouting(options =>
             {
@@ -67,9 +77,9 @@ namespace CSC237_ahrechka_SportsStore
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseSession();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -78,6 +88,8 @@ namespace CSC237_ahrechka_SportsStore
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            SportsProContext.CreateAdminUser(app.ApplicationServices).Wait();
         }
     }
 }
